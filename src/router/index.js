@@ -5,8 +5,14 @@ import Register from '../components/Views/Register.vue';
 
 
 const routes = [
+    
     {
         path: '/',
+        name: 'Home',
+        component: Dashboard
+    },
+    {
+        path: '/dashboard',
         name: 'Dashboard',
         component: Dashboard
     },
