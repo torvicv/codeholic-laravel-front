@@ -1,6 +1,5 @@
-import { data } from "autoprefixer";
-import axios from "axios";
 import { createStore } from "vuex";
+import axiosClient from "../axios";
 
 const store = createStore({
     state: {
@@ -14,6 +13,7 @@ const store = createStore({
         logout: state => {
             state.user.data = {};
             state.user.token = null;
+            sessionStorage.removeItem('TOKEN');
         },
         setUser: (state, userData) => {
           state.user.data = userData.user;
@@ -22,21 +22,26 @@ const store = createStore({
         }
     },
     actions: {
-        register({ commit}, user) {
-            return axios.post('http://localhost:8000/api/register', 
-                JSON.stringify(user),
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json'
-                    }
-                }
-            )
-            // .then((res) => res.json())
-            .then((res) => {
-                commit("setUser", res.data);
-                return res.data;
+        register({ commit }, user) {
+            return axiosClient.post('/register', user)
+            .then(({data}) => {
+                commit("setUser", data);
+                return data;
             });
+        },
+        login({ commit }, user) {
+            return axiosClient.post('/login', user)
+            .then(({data}) => {
+                commit("setUser", data);
+                return data;
+            });
+        },
+        logout({ commit }) {
+            return axiosClient.post('/logout')
+                .then((response) => {
+                    commit("logout");
+                    return response;
+                });
         }
     },
     modules: {}

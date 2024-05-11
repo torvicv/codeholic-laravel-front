@@ -1,6 +1,9 @@
 <script>
 import axios from "axios";
 import Auth from "./../Layouts/Auth.vue";
+import { useRouter } from "vue-router";
+import store from "../../store";
+import { reactive } from "vue";
 
 export default {
   name: "Login",
@@ -9,29 +12,31 @@ export default {
   },
   data() {
     return {
-      email: "",
-      password: "",
-    };
+      form: {
+        email: "",
+        password: "",
+      },
+      errors: reactive({
+        email: "",
+        password: "",
+      }),
+      router: useRouter()
+    }
   },
-  computed: {
-    submit() {
-      axios.defaults.withCredentials = true;
-      axios.defaults.withXSRFToken = true;
-      axios
-        .get("http://localhost:8000/sanctum/csrf-cookie")
-        .then(function (response) {
-          console.log(response);
-        });
-      axios
-        .post("http://localhost:8000/api/login", {
-          email: email.value,
-          password: password.value,
+  methods: {
+    submit(ev) {
+      ev.preventDefault();
+      store.dispatch("login", this.form)
+        .then((res) => {
+          this.$router.push({ name: "Dashboard" });
         })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
+        .catch((err) => {
+          if (!err.response.data.error) {
+            this.errors.email = err.response.data.errors.email;
+            this.errors.password = err.response.data.errors.password;
+          } else {
+            this.errors.email = err.response.data.error;
+          }
         });
     },
   },
@@ -68,11 +73,12 @@ export default {
                 name="email"
                 type="email"
                 autocomplete="email"
-                v-model="email"
+                v-model="form.email"
                 required
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+            <p v-for="error in errors.email" v-if="errors.email" class="text-red-500">{{ error }}</p>
           </div>
 
           <div>
@@ -97,10 +103,11 @@ export default {
                 type="password"
                 autocomplete="current-password"
                 required
-                v-model="password"
+                v-model="form.password"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+            <p v-for="error in errors.password" v-if="errors.email" class="text-red-500">{{ error }}</p>
           </div>
 
           <div>

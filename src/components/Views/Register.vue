@@ -2,6 +2,7 @@
 import Auth from '../Layouts/Auth.vue';
 import store from '../../store';
 import { useRouter } from 'vue-router';
+import { reactive } from 'vue';
 
 export default {
   name: "Register",
@@ -16,12 +17,12 @@ export default {
         password: "",
         password_confirmation: ""
       },
-      errors: {
+      errors: reactive({
         name: "",
         email: "",
         password: "",
         password_confirmation: ""
-      },
+      }),
       router: useRouter()
     };
   },
@@ -31,6 +32,12 @@ export default {
       store.dispatch("register", this.form)
         .then((res) => {
           this.router.push({ name: "Dashboard" });
+        })
+        .catch((err) => {
+          this.errors.name = err.response.data.errors.name;
+          this.errors.email = err.response.data.errors.email;
+          this.errors.password = err.response.data.errors.password;
+          this.errors.password_confirmation = err.response.data.errors.password_confirmation;
         });
     }
   }
@@ -72,6 +79,7 @@ export default {
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+            <p v-for="error in errors.name" v-if="errors.name" class="text-sm text-red-600">{{ error }}</p>
           </div>
           
           <div>
@@ -91,6 +99,7 @@ export default {
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+            <p v-for="error in errors.email" v-if="errors.email" class="text-sm text-red-600">{{ error }}</p>
           </div>
 
           <div>
@@ -112,6 +121,7 @@ export default {
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+            <p v-for="error in errors.password" v-if="errors.password" class="text-sm text-red-600">{{ error }}</p>
           </div>
           <div>
             <div class="flex items-center justify-between">
@@ -132,6 +142,7 @@ export default {
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+            <p v-for="error in errors.password_confirmation" v-if="errors.password_confirmation" class="text-sm text-red-600">{{ error }}</p>
           </div>
 
           <div>
