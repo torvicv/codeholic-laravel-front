@@ -1,10 +1,38 @@
 <script>
 import Auth from '../Layouts/Auth.vue';
+import store from '../../store';
+import { useRouter } from 'vue-router';
 
 export default {
   name: "Register",
   components: {
     Auth
+  },
+  data() {
+    return {
+      form: {
+        name: "",
+        email: "",
+        password: "",
+        password_confirmation: ""
+      },
+      errors: {
+        name: "",
+        email: "",
+        password: "",
+        password_confirmation: ""
+      },
+      router: useRouter()
+    };
+  },
+  methods: {
+    register(ev) {
+      ev.preventDefault();
+      store.dispatch("register", this.form)
+        .then((res) => {
+          this.router.push({ name: "Dashboard" });
+        });
+    }
   }
 };
 </script>
@@ -26,7 +54,26 @@ export default {
       </div>
 
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form class="space-y-6" action="#" method="POST">
+        <form class="space-y-6" @submit.prevent="register">
+          <div>
+            <label
+              for="name"
+              class="block text-sm font-medium leading-6 text-gray-900"
+              >Full name</label
+            >
+            <div class="mt-2">
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autocomplete="name"
+                required
+                v-model="form.name"
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+          
           <div>
             <label
               for="email"
@@ -40,6 +87,7 @@ export default {
                 type="email"
                 autocomplete="email"
                 required
+                v-model="form.email"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -60,6 +108,7 @@ export default {
                 type="password"
                 autocomplete="current-password"
                 required
+                v-model="form.password"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -67,17 +116,19 @@ export default {
           <div>
             <div class="flex items-center justify-between">
               <label
-                for="confirm_password"
+                for="password_confirmation"
                 class="block text-sm font-medium leading-6 text-gray-900"
                 >Confirm Password</label
               >
             </div>
             <div class="mt-2">
               <input
-                id="confirm_password"
-                name="password"
-                type="confirm_password"
+                id="password_confirmation"
+                name="password_confirmation"
+                type="password"
+                autocomplete="current-password_confirmation"
                 required
+                v-model="form.password_confirmation"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -88,10 +139,16 @@ export default {
               type="submit"
               class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Register
+              Sign up
             </button>
           </div>
         </form>
+        <div>
+          <p class="mt-6 text-center text-sm text-gray-600">
+            Already have an account? 
+            <router-link to="Login">Login</router-link>
+          </p>
+        </div>
       </div>
     </div>
   </Auth>

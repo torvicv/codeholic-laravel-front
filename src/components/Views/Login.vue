@@ -112,6 +112,9 @@ export default {
             </button>
           </div>
         </form>
+        <div>
+          <router-link to="Register">Register</router-link>
+        </div>
       </div>
     </div>
   </Auth>
