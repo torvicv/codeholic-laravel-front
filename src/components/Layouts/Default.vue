@@ -31,10 +31,12 @@ export default {
         {
           name: "Dashboard",
           key: "dashboard",
+          path: '/dashboard'
         },
         {
           name: "Surveys",
           key: "surveys",
+          path: '/surveys'
         },
       ],
     };
@@ -59,7 +61,7 @@ export default {
               <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
               <router-link
                 v-for="item in navigation"
-                :to="item.name"
+                :to="item.path"
                 class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
                 :class="[
                   this.$route.name === item.name
