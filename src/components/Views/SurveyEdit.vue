@@ -5,36 +5,43 @@ import Default from "../Layouts/Default.vue";
 import QuestionEditor from '../Editor/QuestionEditor.vue';
 import { v4 as uuidv4 } from 'uuid';
 import store from "../../store";
+import axiosClient from "../../axios";
 
 export default {
   components: {
     Default,
-    QuestionEditor,
+    QuestionEditor
   },
   setup() {
     const route = useRoute();
     const router = useRouter();
     const changeImage = ref(false);
+    const image_url = ref(null);
     const model = ref({
-      title: "",
+      title: '',
       status: false,
       description: null,
       image: null,
       expire_date: null,
       questions: [],
     });
+    const response = store.dispatch('getSurvey', route.params.id)
+      .then(resp => {
+        model.value = resp.data;
+      });
     return {
       route,
       model,
       router,
-      changeImage
+      changeImage,
+      image_url
     };
   },
   methods: {
     saveSurvey() {
       console.log(this.model);
       this.model.status = Boolean(this.model.status);
-      store.dispatch('saveSurvey', this.model)
+      store.dispatch('updateSurvey', this.model)
         .then(({data}) => {
           this.router.push({
             name: "SurveyEdit",
@@ -53,7 +60,7 @@ export default {
       const reader = new FileReader();
       reader.onload = (ev) => {
         // this.model.image = reader.result;
-        this.model.image_url = reader.result;
+        this.image_url = reader.result;
       };
       reader.readAsDataURL(file);
     },
@@ -144,8 +151,8 @@ export default {
                     v-model="model.status"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                   >
-                    <option value="{{true}}">Active</option>
-                    <option value="{{false}}">No active</option>
+                    <option value="true">Active</option>
+                    <option value="false">No active</option>
                   </select>
                 </div>
               </div>
@@ -173,7 +180,7 @@ export default {
               </div>
             </div>
 
-            <div class="col-span-full" v-if="changeImage">
+            <div class="col-span-full">
               <label
                 for="photo"
                 class="block text-sm font-medium leading-6 text-gray-900"
@@ -192,7 +199,8 @@ export default {
                     clip-rule="evenodd"
                   />
                 </svg>-->
-                <img :src="model.image_url" :alt="model.title" v-if="model.image_url" class="w-12 h-12" />
+                <img :src="image_url" :alt="model.title" v-if="image_url" class="w-12 h-12" />
+                <img :src="model.image" :alt="model.title" v-else class="w-12 h-12" />
                 <button
                   @click="onChangeImage"
                   type="button"

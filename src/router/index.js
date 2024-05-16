@@ -5,6 +5,7 @@ import Register from '../components/Views/Register.vue';
 import store from "../store";
 import Surveys from "../components/Views/Surveys.vue";
 import SurveyCreate from "../components/Views/SurveyCreate.vue";
+import SurveyEdit from "../components/Views/SurveyEdit.vue";
 
 
 const routes = [
@@ -31,6 +32,12 @@ const routes = [
         name: 'SurveyCreate',
         meta: {requiresAuth: true},
         component: SurveyCreate
+    },
+    {
+        path: '/surveys/:id/edit',
+        name: 'SurveyEdit',
+        meta: {requiresAuth: true},
+        component: SurveyEdit
     },
     {
         path: '/login',

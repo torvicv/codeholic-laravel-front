@@ -7,6 +7,7 @@ const store = createStore({
             data: {},
             token: sessionStorage.getItem('TOKEN')
         },
+        surveys: [],
         questionTypes: ['text', 'select', 'radio', 'checkbox', 'textarea']
     },
     getters: {},
@@ -34,25 +35,34 @@ const store = createStore({
         }
     },
     actions: {
-        saveSurvey ({ commit }, survey) {
-            let response = axiosClient.post('/survey', survey, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                }
-            })
+        async getSurvey ({ commit }, survey) {
+            return axiosClient.get('/survey/'+survey+'/edit')
+               .then(res => {
+                    return res.data;
+                });
+        },
+        async saveSurvey ({ commit }, survey) {
+            return axiosClient.post('/survey', survey, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                })
                 .then(res => {
                     commit('saveSurvey', res.data);
                     return res;
                 });
-            return response;
         },
-        updateSurvey ({ commit }, survey) {
-            let response = axiosClient.put('/survey/'+survey.id, survey)
+        async updateSurvey ({ commit }, survey) {
+            survey._method = 'put';
+            return axiosClient.post('/survey/'+survey.id, survey, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                })
                 .then(res => {
                     commit('updateSurvey', res.data);
                     return res;
                 });
-            return response;
         },
         register({ commit }, user) {
             return axiosClient.post('/register', user)
