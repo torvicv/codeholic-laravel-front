@@ -35,6 +35,12 @@ const store = createStore({
         }
     },
     actions: {
+        async getSurveys () {
+            return axiosClient.get('/survey')
+               .then(res => {
+                    return res.data.data;
+                });
+        },
         async getSurvey ({ commit }, survey) {
             return axiosClient.get('/survey/'+survey+'/edit')
                .then(res => {
@@ -64,6 +70,12 @@ const store = createStore({
                     return res;
                 });
         },
+        async deleteSurvey ({ commit }, survey) {
+            return axiosClient.delete('/survey/' + survey)
+                .then(res => {
+                    return res;
+                });
+            },
         register({ commit }, user) {
             return axiosClient.post('/register', user)
             .then(({data}) => {

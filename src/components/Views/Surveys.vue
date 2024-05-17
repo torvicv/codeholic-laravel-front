@@ -1,10 +1,32 @@
 <script>
+import store from "../../store";
 import Default from "../Layouts/Default.vue";
+import SurveyCard from './SurveyCard.vue';
 
 export default {
   name: "Surveys",
   components: {
     Default,
+    SurveyCard,
+  },
+  data() {
+    return {
+      surveys: [],
+    };
+  },
+  mounted() {
+    store.dispatch("getSurveys").then((surveys) => {
+      this.surveys = surveys;
+    });
+  },
+  methods: {
+    deleteSurvey(id) {
+      store.dispatch("deleteSurvey", id).then(() => {
+        store.dispatch("getSurveys").then((surveys) => {
+          this.surveys = surveys;
+        });
+      });
+    },
   },
 };
 </script>
@@ -33,6 +55,11 @@ export default {
           </svg>
           Create survey
         </router-link>
+      </div>
+      <div class="grid grid-cols-3 gap-6 my-3">
+        <div v-for="survey in surveys" :key="survey.id">
+          <SurveyCard @delete="deleteSurvey" :survey="survey" />
+        </div>
       </div>
     </div>
   </Default>
