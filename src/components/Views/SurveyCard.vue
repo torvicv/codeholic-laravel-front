@@ -54,8 +54,8 @@ export default {
         class="p-2"
         :class="
           survey.status
-            ? 'text-green-600 bg-green-100 rounded-md'
-            : 'text-red-600 bg-red-100 rounded-md'
+            ? 'text-green-600'
+            : 'text-red-600'
         "
       >
         {{ survey.status ? "Activo" : "No Activado" }}
