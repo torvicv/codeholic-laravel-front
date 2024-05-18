@@ -14,8 +14,12 @@ export default {
   },
   emit: ["change", "deleteQuestion", "addQuestion"],
   data() {
+    const questionData = JSON.parse(JSON.stringify(this.question));
+    if (typeof questionData.data ==='string') {
+      questionData.data = JSON.parse(questionData.data);
+    }
     return {
-      model: ref(JSON.parse(JSON.stringify(this.question))),
+      model: ref(questionData),
       ind: this.index,
       questionTypes: store.state.questionTypes,
     };
@@ -48,7 +52,7 @@ export default {
       this.dataChange();
     },
     dataChange() {
-      const data = this.model.value;
+      const data = this.model;
       if (!this.shouldHaveOptions()) {
         delete data.data.options;
       }

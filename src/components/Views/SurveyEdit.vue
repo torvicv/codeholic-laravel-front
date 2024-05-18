@@ -81,7 +81,7 @@ export default {
     deleteQuestion(question) {
       this.model.questions = this.model.questions.filter(q => q!== question);
     },
-    questionsChange(question) {
+    questionChange(question) {
       this.model.questions = this.model.questions.map(q => {
         if (q.id === question.id) {
           return JSON.parse(JSON.stringify(question));
@@ -264,7 +264,10 @@ export default {
       </div>
 
       <div class="my-3">
-        <button class="flex items-center bg-black text-white py-2 px-3 rounded-md">
+        <button
+          @click="addQuestion"
+          type="button"
+          class="flex items-center bg-black text-white py-2 px-3 rounded-md">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -293,7 +296,7 @@ export default {
         <QuestionEditor
         :question="question"
         :index="index"
-        @change="changeQuestion"
+        @change="questionChange"
         @add-question="addQuestion"
         @delete-question="deleteQuestion"
         />
